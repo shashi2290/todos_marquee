@@ -1,0 +1,35 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "user1",
+      "password": "password1",
+      "name": "John Doe",
+      "todos": [
+        {
+          "id": 1,
+          "title": "Finish project",
+          "completed": false,
+          "subTasks": []
+        },
+        {
+          "id": 2,
+          "title": "Go to the gym",
+          "completed": false,
+          "subTasks": [
+            {
+              "id": 1,
+              "title": "Warm up",
+              "completed": true
+            },
+            {
+              "id": 2,
+              "title": "Weightlifting",
+              "completed": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

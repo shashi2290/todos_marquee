@@ -1,26 +1,44 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+// import React from "react";
+// import data from "./mockdata.json";
+// // import './App.css';
 
-function App() {
+// function App() {
+//   return (
+//     <div className="App">
+//       <h1>Todo App</h1>
+//       {JSON.stringify(data)}
+//     </div>
+//   );
+// }
+
+// export default App;
+
+import React, { ReactNode } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./AuthContext";
+import PrivateRoute from "./routes/PrivateRoute";
+import { LoginPage } from "./components/Login/Login";
+import { DashboardPage } from "./components/Dashboard/Dashboard";
+
+const App: React.FC<any> = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <DashboardPage />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/" element={<LoginPage />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
-}
+};
 
 export default App;
