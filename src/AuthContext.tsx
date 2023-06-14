@@ -14,6 +14,7 @@ interface AuthContextData {
   addTodo: (task: string) => void;
   updateTodo: (todoId: number) => void;
   verifyToken: (token: string | null) => void;
+  addSubTask: (todoId: number, subTask: string) => void;
 }
 
 interface AuthProviderProps {
@@ -86,13 +87,37 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
       setUser({ ...user, todos: [...modifiedTodos] });
     }
+  };
 
-    // const updatedTodo = {...user?.todos[index], completed: !todo?.completed};
+  const addSubTask = (todoId: number, subtask: string) => {
+    if (user) {
+      const todos = [...user?.todos];
+      const modifiedTodos = todos?.map((todo) => {
+        if (todo.subTasks && todo.id === todoId) {
+          let newSubTask = {
+            id: todo?.subTasks?.length + 1,
+            title: subtask,
+            completed: false,
+          };
+          todo.subTasks.push(newSubTask);
+        }
+        return todo;
+      });
+      setUser({ ...user, todos: [...modifiedTodos] });
+    }
   };
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, addTodo, updateTodo, verifyToken }}
+      value={{
+        user,
+        login,
+        logout,
+        addTodo,
+        updateTodo,
+        verifyToken,
+        addSubTask,
+      }}
     >
       {children}
     </AuthContext.Provider>

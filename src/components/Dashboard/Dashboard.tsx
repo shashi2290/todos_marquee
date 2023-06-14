@@ -4,8 +4,11 @@ import { Todo } from "../../api";
 import { useNavigate } from "react-router-dom";
 
 export const DashboardPage: React.FC = () => {
-  const { user, logout, addTodo, verifyToken } = useAuth();
+  const { user, logout, addTodo, verifyToken, addSubTask } = useAuth();
   const [taskInput, setTaskInput] = React.useState("");
+  const [subTask, setSubTask] = React.useState("");
+  const [show, setShow] = React.useState({ show: false, todoId: -1 });
+
   const navigate = useNavigate();
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -17,8 +20,20 @@ export const DashboardPage: React.FC = () => {
   }, [user, navigate, verifyToken]);
 
   const handleAddTask = () => {
+    if (!taskInput.trim()) {
+      return;
+    }
     addTodo(taskInput);
     setTaskInput("");
+  };
+
+  const handleAddSubTask = (todoId: number) => {
+    if (!subTask.trim()) {
+      return;
+    }
+    addSubTask(todoId, subTask);
+    setShow({ show: false, todoId: -1 });
+    setSubTask("");
   };
 
   return (
@@ -28,7 +43,37 @@ export const DashboardPage: React.FC = () => {
       <h3>Todos:</h3>
       <ul>
         {user?.todos.map((todo) => (
-          <TodoItem key={todo.id} todo={todo} />
+          <div style={{ display: "flex", paddingBottom: "20px" }}>
+            <TodoItem key={todo.id} todo={todo} />
+            <button
+              style={{ height: "20px" }}
+              onClick={() => {
+                if (show.show) {
+                  setShow({ show: false, todoId: -1 });
+                  return;
+                }
+                setShow({ show: true, todoId: todo.id });
+              }}
+            >
+              +
+            </button>
+            {show.show && show.todoId === todo.id && (
+              <div>
+                <input
+                  type="text"
+                  value={subTask}
+                  onChange={(e) => setSubTask(e.target.value)}
+                />
+                <button
+                  onClick={() => {
+                    handleAddSubTask(todo.id);
+                  }}
+                >
+                  Add Subtask Task
+                </button>
+              </div>
+            )}
+          </div>
         ))}
       </ul>
       <input
@@ -63,6 +108,7 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo }) => {
         // readOnly
       />
       {todo.title}
+
       {todo.subTasks && (
         <ul>
           {todo.subTasks.map((subTask) => (
